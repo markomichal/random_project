@@ -1,0 +1,39 @@
+#include <Servo.h> //zahrnieme knižnicu pre servo, takže môžem pracovať na vyššiej úrovni bez použitia datasheetu
+ int poz =20;//začiatočná pozícia serva na 20 degrees 
+ int a; // prečíta nami zadanú hodnotu
+ int pin13 = 13;
+Servo servo; //označíme Servo ako "servo" na budúcu komunikaciu so súčiatstkou
+
+void setup() {
+Serial.begin(9600); //rýchlosť komunikácie v baudoch (musí byť rovnaká tu a v monitore sériovom)
+servo.attach(pin13); //priradíme servu pin13 na arduine (digital)
+}
+
+void loop() {
+  servo.write(poz); //Uvedie servo do pozície 20degree
+Serial.print("pozicia serva je "); 
+Serial.println(poz); //vypisuje aktuálnu pozíciu
+if (poz>=20 && poz<=165) { //podmienka pre rozsah chodu serva
+  while(Serial.available ()== 0){}; //počka kým je uživateľom zadaná hodnota
+  a= Serial.parseInt(); //premenná a je nacitana ako integer zo serial monitoru
+  switch (a){  //switch podmienky podobne ako IF
+case 4:  //ak uživaťeľ zadá 4
+  poz = poz+10;  //k pozícií sa pričíta 10
+  break;
+case 6:// ak uživaťeľ zadá 6
+  poz = poz-10; //od pozície sa odčíta 10
+  break;
+default: //pokiaľ nevyhovuje ani jedna z požiadavok vykona sa:
+  Serial.println("stlač 4 pre riadenie do lava 6 pre riadenie do prava");
+  }}
+if(poz<20) //pokial uživateľ zadá servu ísť pod 20degree
+  {Serial.println("Dosiahol si ľavý limit zatáčania");
+  poz=20; //vráti na počiatočnú/ľavú pozíciu 
+  }
+if(poz>165) //pokial uživateľ zadá servu ísť nad 165degree
+  {Serial.println("Dosiahol si pravý limit zatáčania");
+  poz=165; //vráti na najvyššiu/pravú pozíciu 
+  }
+
+}
+
